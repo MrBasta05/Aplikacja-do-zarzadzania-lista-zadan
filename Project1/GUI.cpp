@@ -20,8 +20,9 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(220, 90));
     dueDateInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 90), wxSize(250, 25));
 
+    wxTextValidator validator(wxFILTER_NUMERIC);
     wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(220, 130));
-    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 130), wxSize(250, 25));
+    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(300, 130), wxSize(250, 25), 0, validator);
 
     wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 170));
     categoryInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 170), wxSize(250, 25));

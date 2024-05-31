@@ -3,6 +3,7 @@
 #define GUI_H
 
 #include <wx/wx.h>
+#include <wx/valtext.h>
 #include "TaskManager.h"
 
 class GUI : public wxFrame {
