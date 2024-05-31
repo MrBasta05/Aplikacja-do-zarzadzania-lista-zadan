@@ -1,4 +1,6 @@
 #include "GUI.h"
+#include "wx/spinctrl.h"
+#include <sstream> 
 
 enum {
     ID_AddTask = 1,
@@ -25,7 +27,8 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
 
     wxTextValidator validator(wxFILTER_NUMERIC);
     wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(420, 210));
-    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(500, 210), wxSize(250, 25), 0, validator);
+    //priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(500, 210), wxSize(250, 25), 0, validator);
+    priorityInput = new wxSpinCtrl(panel, wxID_ANY, "", wxPoint(500, 210), wxSize(250, 25));
 
 
     wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(420, 250));
@@ -84,7 +87,7 @@ void GUI::OnAddTask(wxCommandEvent& event) {
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
     std::string dueDate = dueDateInput->GetValue().ToStdString();
-    std::string priority = priorityInput->GetValue().ToStdString();
+    std::string priority = priorityInput->GetTextValue().ToStdString();
     std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task newTask(title, description, dueDate, priority, category);
@@ -100,7 +103,7 @@ void GUI::OnEditTask(wxCommandEvent& event) {
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
     std::string dueDate = dueDateInput->GetValue().ToStdString();
-    std::string priority = priorityInput->GetValue().ToStdString();
+    std::string priority = priorityInput->GetTextValue().ToStdString();
     std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task editedTask(title, description, dueDate, priority, category);

@@ -19,7 +19,7 @@ private:
     wxTextCtrl* titleInput;
     wxTextCtrl* descriptionInput;
     wxTextCtrl* dueDateInput;
-    wxTextCtrl* priorityInput;
+    wxSpinCtrl* priorityInput;
     wxChoice* categoryChoice;
 
 public:
