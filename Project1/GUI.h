@@ -5,10 +5,10 @@
 #include <wx/wx.h>
 #include <wx/valtext.h>
 #include <wx/listctrl.h>
-#include <wx/listctrl.h>
 #include <wx/choice.h>
 #include <wx/colour.h>
 #include "TaskManager.h"
+#include <wx/datectrl.h>
 
 class GUI : public wxFrame {
 private:
@@ -18,7 +18,7 @@ private:
     wxListCtrl* taskList;
     wxTextCtrl* titleInput;
     wxTextCtrl* descriptionInput;
-    wxTextCtrl* dueDateInput;
+    wxDatePickerCtrl* dueDateInput;
     wxSpinCtrl* priorityInput;
     wxChoice* categoryChoice;
 

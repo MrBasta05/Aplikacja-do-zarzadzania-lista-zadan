@@ -1,6 +1,7 @@
 #include "GUI.h"
 #include "wx/spinctrl.h"
-#include <sstream> 
+#include <wx/datectrl.h>
+
 
 enum {
     ID_AddTask = 1,
@@ -13,9 +14,10 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
 
     taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
 
-    taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 150);
-    taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 150);
-
+    taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 160);
+    taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 160);
+    taskList->InsertColumn(2, wxT("DueDate"), wxLIST_FORMAT_LEFT, 80);
+    
     wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, wxT("Title:"), wxPoint(420, 10));
     titleInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(500, 10), wxSize(250, 25));
 
@@ -23,11 +25,9 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     descriptionInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(500, 50), wxSize(250, 105), wxTE_MULTILINE);
 
     wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(420, 170));
-    dueDateInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(500, 170), wxSize(250, 25));
+    dueDateInput = new wxDatePickerCtrl(panel, wxID_ANY, wxDefaultDateTime, wxPoint(500, 170), wxSize(250, 25));
 
-    wxTextValidator validator(wxFILTER_NUMERIC);
     wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(420, 210));
-    //priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(500, 210), wxSize(250, 25), 0, validator);
     priorityInput = new wxSpinCtrl(panel, wxID_ANY, "", wxPoint(500, 210), wxSize(250, 25));
 
 
@@ -80,13 +80,14 @@ void GUI::LoadTasks() {
 
         taskList->InsertItem(item);
         taskList->SetItem(i, 1, task.getCategory());
+        taskList->SetItem(i, 2, task.getDueDate());
     }
 }
 
 void GUI::OnAddTask(wxCommandEvent& event) {
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
-    std::string dueDate = dueDateInput->GetValue().ToStdString();
+    std::string dueDate = dueDateInput->GetValue().Format("%d.%m.%G").ToStdString();
     std::string priority = priorityInput->GetTextValue().ToStdString();
     std::string category = categoryChoice->GetStringSelection().ToStdString();
 
@@ -102,7 +103,7 @@ void GUI::OnEditTask(wxCommandEvent& event) {
 
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
-    std::string dueDate = dueDateInput->GetValue().ToStdString();
+    std::string dueDate = dueDateInput->GetValue().Format("%d.%m.%G").ToStdString();
     std::string priority = priorityInput->GetTextValue().ToStdString();
     std::string category = categoryChoice->GetStringSelection().ToStdString();
 
@@ -127,7 +128,11 @@ void GUI::OnSelectTask(wxCommandEvent& event) {
     Task selectedTask = taskManager.getSortedTasks()[selection];
     titleInput->SetValue(selectedTask.getTitle());
     descriptionInput->SetValue(selectedTask.getDescription());
-    dueDateInput->SetValue(selectedTask.getDueDate());
+    
+    wxDateTime dueDate;
+    dueDate.ParseISODate(selectedTask.getDueDate());
+    dueDateInput->SetValue(dueDate);
+
     priorityInput->SetValue(selectedTask.getPriority());
     categoryChoice->SetStringSelection(selectedTask.getCategory());
 }
