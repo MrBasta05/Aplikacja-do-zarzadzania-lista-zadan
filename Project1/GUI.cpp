@@ -47,9 +47,10 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
 
 void GUI::LoadTasks() {
     taskList->DeleteAllItems();
-    const auto& tasks = taskManager.getTasks();
-    for (size_t i = 0; i < tasks.size(); ++i) {
-        const auto& task = tasks[i];
+    const auto& sortedTasks = taskManager.getSortedTasks();
+
+    for (size_t i = 0; i < sortedTasks.size(); ++i) {
+        const auto& task = sortedTasks[i];
         wxListItem item;
         item.SetId(i);
         item.SetText(task.getTitle());
@@ -120,7 +121,7 @@ void GUI::OnSelectTask(wxCommandEvent& event) {
     long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
-    Task selectedTask = taskManager.getTasks()[selection];
+    Task selectedTask = taskManager.getSortedTasks()[selection];
     titleInput->SetValue(selectedTask.getTitle());
     descriptionInput->SetValue(selectedTask.getDescription());
     dueDateInput->SetValue(selectedTask.getDueDate());

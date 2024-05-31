@@ -14,6 +14,7 @@ public:
     void editTask(int index, const Task& task);
     void deleteTask(int index);
     std::vector<Task> getTasks() const;
+    std::vector<Task> getSortedTasks() const;
 };
 
 #endif // TASKMANAGER_H
