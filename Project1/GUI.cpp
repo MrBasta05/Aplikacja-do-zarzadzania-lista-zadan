@@ -15,20 +15,20 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     titleInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 10), wxSize(250, 25));
 
     wxStaticText* descriptionLabel = new wxStaticText(panel, wxID_ANY, wxT("Description:"), wxPoint(220, 50));
-    descriptionInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 50), wxSize(250, 25));
+    descriptionInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 50), wxSize(250, 105), wxTE_MULTILINE);
 
-    wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(220, 90));
-    dueDateInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 90), wxSize(250, 25));
+    wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(220, 170));
+    dueDateInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 170), wxSize(250, 25));
 
-    wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(220, 130));
-    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 130), wxSize(250, 25));
+    wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(220, 210));
+    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 210), wxSize(250, 25));
 
-    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 170));
-    categoryInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 170), wxSize(250, 25));
+    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 250));
+    categoryInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 250), wxSize(250, 25));
 
-    wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(220, 210));
-    wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(320, 210));
-    wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(420, 210));
+    wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(220, 285));
+    wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(320, 285));
+    wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(420, 285));
 
     Connect(ID_AddTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnAddTask));
     Connect(ID_EditTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnEditTask));
