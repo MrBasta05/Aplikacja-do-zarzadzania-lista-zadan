@@ -9,7 +9,7 @@ enum {
 GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
-    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(200, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
+    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
 
     taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 150);
     taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 150);
@@ -28,7 +28,7 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(500, 210), wxSize(250, 25), 0, validator);
 
 
-    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(500, 250));
+    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(420, 250));
     wxString categories[] = { wxT("Urgent"), wxT("Regular"), wxT("Low Priority") };
     categoryChoice = new wxChoice(panel, wxID_ANY, wxPoint(500, 250), wxSize(250, 25), WXSIZEOF(categories), categories);
     categoryChoice->SetSelection(0); // Default selection
