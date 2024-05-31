@@ -4,6 +4,7 @@
 
 #include <wx/wx.h>
 #include <wx/valtext.h>
+#include <wx/listctrl.h>
 #include "TaskManager.h"
 
 class GUI : public wxFrame {
@@ -11,7 +12,7 @@ private:
     TaskManager taskManager;
 
     // Elementy interfejsu
-    wxListBox* taskList;
+    wxListCtrl* taskList;
     wxTextCtrl* titleInput;
     wxTextCtrl* descriptionInput;
     wxTextCtrl* dueDateInput;
@@ -26,6 +27,7 @@ public:
     void OnEditTask(wxCommandEvent& event);
     void OnDeleteTask(wxCommandEvent& event);
     void OnSelectTask(wxCommandEvent& event);
+    void LoadTasks();
 };
 
 #endif // GUI_H

@@ -9,7 +9,10 @@ enum {
 GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
-    taskList = new wxListBox(panel, wxID_ANY, wxPoint(10, 10), wxSize(200, 300));
+    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
+
+    taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 150);
+    taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 150);
 
     wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, wxT("Title:"), wxPoint(220, 10));
     titleInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 10), wxSize(250, 25));
@@ -34,7 +37,34 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     Connect(ID_AddTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnAddTask));
     Connect(ID_EditTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnEditTask));
     Connect(ID_DeleteTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnDeleteTask));
-    Connect(wxID_ANY, wxEVT_LISTBOX, wxCommandEventHandler(GUI::OnSelectTask));
+    Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxCommandEventHandler(GUI::OnSelectTask));
+
+    LoadTasks();
+}
+
+void GUI::LoadTasks() {
+    taskList->DeleteAllItems();
+    const auto& tasks = taskManager.getTasks();
+    for (size_t i = 0; i < tasks.size(); ++i) {
+        const auto& task = tasks[i];
+        wxListItem item;
+        item.SetId(i);
+        item.SetText(task.getTitle());
+
+        // Set custom background color for different categories
+        if (task.getCategory() == "Urgent") {
+            item.SetBackgroundColour(*wxRED);
+        }
+        else if (task.getCategory() == "Regular") {
+            item.SetBackgroundColour(*wxGREEN);
+        }
+        else {
+            item.SetBackgroundColour(*wxWHITE);
+        }
+
+        taskList->InsertItem(item);
+        taskList->SetItem(i, 1, task.getCategory());
+    }
 }
 
 void GUI::OnAddTask(wxCommandEvent& event) {
@@ -47,11 +77,11 @@ void GUI::OnAddTask(wxCommandEvent& event) {
     Task newTask(title, description, dueDate, priority, category);
     taskManager.addTask(newTask);
 
-    taskList->AppendString(title);
+    LoadTasks();
 }
 
 void GUI::OnEditTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
     std::string title = titleInput->GetValue().ToStdString();
@@ -63,19 +93,19 @@ void GUI::OnEditTask(wxCommandEvent& event) {
     Task editedTask(title, description, dueDate, priority, category);
     taskManager.editTask(selection, editedTask);
 
-    taskList->SetString(selection, title);
+    LoadTasks();
 }
 
 void GUI::OnDeleteTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
     taskManager.deleteTask(selection);
-    taskList->Delete(selection);
+    LoadTasks();
 }
 
 void GUI::OnSelectTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
     Task selectedTask = taskManager.getTasks()[selection];
