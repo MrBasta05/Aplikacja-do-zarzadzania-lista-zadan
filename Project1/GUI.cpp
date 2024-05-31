@@ -9,7 +9,7 @@ enum {
 GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
-    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
+    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(200, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
 
     taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 150);
     taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 150);
@@ -28,7 +28,9 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(300, 130), wxSize(250, 25), 0, validator);
 
     wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 170));
-    categoryInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 170), wxSize(250, 25));
+    wxString categories[] = { wxT("Urgent"), wxT("Regular"), wxT("Low Priority") };
+    categoryChoice = new wxChoice(panel, wxID_ANY, wxPoint(300, 170), wxSize(250, 25), WXSIZEOF(categories), categories);
+    categoryChoice->SetSelection(0); // Default selection
 
     wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(220, 210));
     wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(320, 210));
@@ -72,7 +74,7 @@ void GUI::OnAddTask(wxCommandEvent& event) {
     std::string description = descriptionInput->GetValue().ToStdString();
     std::string dueDate = dueDateInput->GetValue().ToStdString();
     std::string priority = priorityInput->GetValue().ToStdString();
-    std::string category = categoryInput->GetValue().ToStdString();
+    std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task newTask(title, description, dueDate, priority, category);
     taskManager.addTask(newTask);
@@ -88,7 +90,7 @@ void GUI::OnEditTask(wxCommandEvent& event) {
     std::string description = descriptionInput->GetValue().ToStdString();
     std::string dueDate = dueDateInput->GetValue().ToStdString();
     std::string priority = priorityInput->GetValue().ToStdString();
-    std::string category = categoryInput->GetValue().ToStdString();
+    std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task editedTask(title, description, dueDate, priority, category);
     taskManager.editTask(selection, editedTask);
@@ -113,5 +115,5 @@ void GUI::OnSelectTask(wxCommandEvent& event) {
     descriptionInput->SetValue(selectedTask.getDescription());
     dueDateInput->SetValue(selectedTask.getDueDate());
     priorityInput->SetValue(selectedTask.getPriority());
-    categoryInput->SetValue(selectedTask.getCategory());
+    categoryChoice->SetStringSelection(selectedTask.getCategory());
 }

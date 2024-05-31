@@ -5,6 +5,8 @@
 #include <wx/wx.h>
 #include <wx/valtext.h>
 #include <wx/listctrl.h>
+#include <wx/listctrl.h>
+#include <wx/choice.h>
 #include "TaskManager.h"
 
 class GUI : public wxFrame {
@@ -17,7 +19,7 @@ private:
     wxTextCtrl* descriptionInput;
     wxTextCtrl* dueDateInput;
     wxTextCtrl* priorityInput;
-    wxTextCtrl* categoryInput;
+    wxChoice* categoryChoice;
 
 public:
     GUI(const wxString& title);
