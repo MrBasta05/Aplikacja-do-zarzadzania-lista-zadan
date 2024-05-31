@@ -7,6 +7,7 @@
 #include <wx/listctrl.h>
 #include <wx/listctrl.h>
 #include <wx/choice.h>
+#include <wx/colour.h>
 #include "TaskManager.h"
 
 class GUI : public wxFrame {

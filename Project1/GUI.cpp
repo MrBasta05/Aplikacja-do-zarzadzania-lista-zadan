@@ -28,7 +28,7 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT("0"), wxPoint(300, 130), wxSize(250, 25), 0, validator);
 
     wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 170));
-    wxString categories[] = { wxT("Urgent"), wxT("Regular"), wxT("Low Priority") };
+    wxString categories[] = { wxT("Personal"), wxT("Work"), wxT("Health"), wxT("Finance"), wxT("Education")};
     categoryChoice = new wxChoice(panel, wxID_ANY, wxPoint(300, 170), wxSize(250, 25), WXSIZEOF(categories), categories);
     categoryChoice->SetSelection(0); // Default selection
 
@@ -54,11 +54,20 @@ void GUI::LoadTasks() {
         item.SetText(task.getTitle());
 
         // Set custom background color for different categories
-        if (task.getCategory() == "Urgent") {
-            item.SetBackgroundColour(*wxRED);
+        if (task.getCategory() == "Work") {
+            item.SetBackgroundColour(*wxCYAN);
         }
-        else if (task.getCategory() == "Regular") {
-            item.SetBackgroundColour(*wxGREEN);
+        else if (task.getCategory() == "Education") {
+            item.SetBackgroundColour(wxColour(34, 252, 0));
+        }
+        else if (task.getCategory() == "Health") {
+            item.SetBackgroundColour(wxColour(255, 127, 110));
+        }
+        else if (task.getCategory() == "Finance") {
+            item.SetBackgroundColour(*wxYELLOW);
+        }
+        else if (task.getCategory() == "Personal") {
+            item.SetBackgroundColour(*wxLIGHT_GREY);
         }
         else {
             item.SetBackgroundColour(*wxWHITE);
