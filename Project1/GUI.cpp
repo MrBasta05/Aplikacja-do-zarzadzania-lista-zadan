@@ -1,12 +1,14 @@
 #include "GUI.h"
 
+
 enum {
     ID_AddTask = 1,
     ID_EditTask,
-    ID_DeleteTask
+    ID_DeleteTask,
+    ID_SaveTask
 };
 
-GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400)) {
+GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(700, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
     taskList = new wxListBox(panel, wxID_ANY, wxPoint(10, 10), wxSize(200, 300));
@@ -29,10 +31,12 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(220, 210));
     wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(320, 210));
     wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(420, 210));
+    wxButton* saveButton = new wxButton(panel, ID_SaveTask, wxT("Save to file"), wxPoint(520, 210));
 
     Connect(ID_AddTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnAddTask));
     Connect(ID_EditTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnEditTask));
     Connect(ID_DeleteTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnDeleteTask));
+    Connect(ID_SaveTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnSaveTask));
     Connect(wxID_ANY, wxEVT_LISTBOX, wxCommandEventHandler(GUI::OnSelectTask));
 }
 
@@ -71,6 +75,10 @@ void GUI::OnDeleteTask(wxCommandEvent& event) {
 
     taskManager.deleteTask(selection);
     taskList->Delete(selection);
+}
+
+void GUI::OnSaveTask(wxCommandEvent& event) {
+    taskManager.saveTaskList("tasks.txt");
 }
 
 void GUI::OnSelectTask(wxCommandEvent& event) {

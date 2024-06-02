@@ -1,8 +1,10 @@
 #pragma once
 #ifndef TASK_H
 #define TASK_H
-
+#include <vector>
+#include <fstream>
 #include <string>
+using namespace std;
 
 class Task {
 private:
@@ -30,6 +32,16 @@ public:
 
     std::string getCategory() const;
     void setCategory(const std::string& category);
+    //save format
+    friend std::ostream& operator<<(std::ostream& os, const Task& task) {
+        os << "Task Name: " << task.title << "\n";
+        os << "Task Name: " << task.description << "\n";
+        os << "Task Name: " << task.dueDate << "\n";
+        os << "Task Name: " << task.category << "\n";
+        os << "Priority: " << task.priority << "\n";
+        return os;
+    }
+ 
 };
 
 #endif // TASK_H

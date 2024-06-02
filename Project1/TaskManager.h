@@ -13,6 +13,7 @@ public:
     void addTask(const Task& task);
     void editTask(int index, const Task& task);
     void deleteTask(int index);
+    void saveTaskList(const std::string& filename)const;
     std::vector<Task> getTasks() const;
 };
 
