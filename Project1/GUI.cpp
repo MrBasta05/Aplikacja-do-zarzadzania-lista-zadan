@@ -1,4 +1,7 @@
 #include "GUI.h"
+#include "wx/spinctrl.h"
+#include <wx/datectrl.h>
+
 
 
 enum {
@@ -8,73 +11,118 @@ enum {
     ID_SaveTask
 };
 
-GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(700, 400)) {
+GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1000, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
-    taskList = new wxListBox(panel, wxID_ANY, wxPoint(10, 10), wxSize(200, 300));
+    taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
 
-    wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, wxT("Title:"), wxPoint(220, 10));
-    titleInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 10), wxSize(250, 25));
+    taskList->InsertColumn(0, wxT("Title"), wxLIST_FORMAT_LEFT, 160);
+    taskList->InsertColumn(1, wxT("Category"), wxLIST_FORMAT_LEFT, 160);
+    taskList->InsertColumn(2, wxT("DueDate"), wxLIST_FORMAT_LEFT, 80);
+    
+    wxStaticText* titleLabel = new wxStaticText(panel, wxID_ANY, wxT("Title:"), wxPoint(420, 10));
+    titleInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(500, 10), wxSize(250, 25));
 
-    wxStaticText* descriptionLabel = new wxStaticText(panel, wxID_ANY, wxT("Description:"), wxPoint(220, 50));
-    descriptionInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 50), wxSize(250, 25));
+    wxStaticText* descriptionLabel = new wxStaticText(panel, wxID_ANY, wxT("Description:"), wxPoint(420, 50));
+    descriptionInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(500, 50), wxSize(250, 105), wxTE_MULTILINE);
 
-    wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(220, 90));
-    dueDateInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 90), wxSize(250, 25));
+    wxStaticText* dueDateLabel = new wxStaticText(panel, wxID_ANY, wxT("Due Date:"), wxPoint(420, 170));
+    dueDateInput = new wxDatePickerCtrl(panel, wxID_ANY, wxDefaultDateTime, wxPoint(500, 170), wxSize(250, 25));
 
-    wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(220, 130));
-    priorityInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 130), wxSize(250, 25));
+    wxStaticText* priorityLabel = new wxStaticText(panel, wxID_ANY, wxT("Priority:"), wxPoint(420, 210));
+    priorityInput = new wxSpinCtrl(panel, wxID_ANY, "", wxPoint(500, 210), wxSize(250, 25));
 
-    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(220, 170));
-    categoryInput = new wxTextCtrl(panel, wxID_ANY, wxT(""), wxPoint(300, 170), wxSize(250, 25));
 
-    wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(220, 210));
-    wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(320, 210));
-    wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(420, 210));
-    wxButton* saveButton = new wxButton(panel, ID_SaveTask, wxT("Save to file"), wxPoint(520, 210));
+    wxStaticText* categoryLabel = new wxStaticText(panel, wxID_ANY, wxT("Category:"), wxPoint(420, 250));
+    wxString categories[] = { wxT("Personal"), wxT("Work"), wxT("Health"), wxT("Finance"), wxT("Education") };
+    categoryChoice = new wxChoice(panel, wxID_ANY, wxPoint(500, 250), wxSize(250, 25), WXSIZEOF(categories), categories);
+    categoryChoice->SetSelection(0); // Default selection
+
+    wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(450, 290));
+    wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(550, 290));
+    wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(650, 290));
+    wxButton* saveButton = new wxButton(panel, ID_SaveTask, wxT("Save to file"), wxPoint(750, 290));
 
     Connect(ID_AddTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnAddTask));
     Connect(ID_EditTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnEditTask));
     Connect(ID_DeleteTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnDeleteTask));
+    Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxCommandEventHandler(GUI::OnSelectTask));
     Connect(ID_SaveTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnSaveTask));
-    Connect(wxID_ANY, wxEVT_LISTBOX, wxCommandEventHandler(GUI::OnSelectTask));
+
+    LoadTasks();
+}
+
+void GUI::LoadTasks() {
+    taskList->DeleteAllItems();
+    const auto& sortedTasks = taskManager.getSortedTasks();
+
+    for (size_t i = 0; i < sortedTasks.size(); ++i) {
+        const auto& task = sortedTasks[i];
+        wxListItem item;
+        item.SetId(i);
+        item.SetText(task.getTitle());
+
+        // Set custom background color for different categories
+        if (task.getCategory() == "Work") {
+            item.SetBackgroundColour(*wxCYAN);
+        }
+        else if (task.getCategory() == "Education") {
+            item.SetBackgroundColour(wxColour(34, 252, 0));
+        }
+        else if (task.getCategory() == "Health") {
+            item.SetBackgroundColour(wxColour(255, 127, 110));
+        }
+        else if (task.getCategory() == "Finance") {
+            item.SetBackgroundColour(*wxYELLOW);
+        }
+        else if (task.getCategory() == "Personal") {
+            item.SetBackgroundColour(*wxLIGHT_GREY);
+        }
+        else {
+            item.SetBackgroundColour(*wxWHITE);
+        }
+
+        taskList->InsertItem(item);
+        taskList->SetItem(i, 1, task.getCategory());
+        taskList->SetItem(i, 2, task.getDueDate());
+    }
 }
 
 void GUI::OnAddTask(wxCommandEvent& event) {
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
-    std::string dueDate = dueDateInput->GetValue().ToStdString();
-    std::string priority = priorityInput->GetValue().ToStdString();
-    std::string category = categoryInput->GetValue().ToStdString();
+    std::string dueDate = dueDateInput->GetValue().Format("%d.%m.%G").ToStdString();
+    std::string priority = priorityInput->GetTextValue().ToStdString();
+    std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task newTask(title, description, dueDate, priority, category);
     taskManager.addTask(newTask);
 
-    taskList->AppendString(title);
+    LoadTasks();
 }
 
 void GUI::OnEditTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
     std::string title = titleInput->GetValue().ToStdString();
     std::string description = descriptionInput->GetValue().ToStdString();
-    std::string dueDate = dueDateInput->GetValue().ToStdString();
-    std::string priority = priorityInput->GetValue().ToStdString();
-    std::string category = categoryInput->GetValue().ToStdString();
+    std::string dueDate = dueDateInput->GetValue().Format("%d.%m.%G").ToStdString();
+    std::string priority = priorityInput->GetTextValue().ToStdString();
+    std::string category = categoryChoice->GetStringSelection().ToStdString();
 
     Task editedTask(title, description, dueDate, priority, category);
     taskManager.editTask(selection, editedTask);
 
-    taskList->SetString(selection, title);
+    LoadTasks();
 }
 
 void GUI::OnDeleteTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
     taskManager.deleteTask(selection);
-    taskList->Delete(selection);
+    LoadTasks();
 }
 
 void GUI::OnSaveTask(wxCommandEvent& event) {
@@ -82,13 +130,17 @@ void GUI::OnSaveTask(wxCommandEvent& event) {
 }
 
 void GUI::OnSelectTask(wxCommandEvent& event) {
-    int selection = taskList->GetSelection();
+    long selection = taskList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (selection == wxNOT_FOUND) return;
 
-    Task selectedTask = taskManager.getTasks()[selection];
+    Task selectedTask = taskManager.getSortedTasks()[selection];
     titleInput->SetValue(selectedTask.getTitle());
     descriptionInput->SetValue(selectedTask.getDescription());
-    dueDateInput->SetValue(selectedTask.getDueDate());
+    
+    wxDateTime dueDate;
+    dueDate.ParseISODate(selectedTask.getDueDate());
+    dueDateInput->SetValue(dueDate);
+
     priorityInput->SetValue(selectedTask.getPriority());
-    categoryInput->SetValue(selectedTask.getCategory());
+    categoryChoice->SetStringSelection(selectedTask.getCategory());
 }

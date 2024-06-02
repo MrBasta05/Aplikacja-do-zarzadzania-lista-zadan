@@ -15,6 +15,7 @@ public:
     void deleteTask(int index);
     void saveTaskList(const std::string& filename)const;
     std::vector<Task> getTasks() const;
+    std::vector<Task> getSortedTasks() const;
 };
 
 #endif // TASKMANAGER_H
