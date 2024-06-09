@@ -48,7 +48,7 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     Connect(ID_DeleteTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnDeleteTask));
     Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxCommandEventHandler(GUI::OnSelectTask));
     Connect(ID_SaveTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnSaveTask));
-
+    taskManager.loadTasksFromFile("tasks.txt");
     LoadTasks();
 }
 

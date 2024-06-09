@@ -25,7 +25,7 @@ private:
 public:
     GUI(const wxString& title);
 
-    // Metody obs�ugi zdarze�
+    // Metody obslugi zdarzen
     void OnAddTask(wxCommandEvent& event);
     void OnEditTask(wxCommandEvent& event);
     void OnDeleteTask(wxCommandEvent& event);
