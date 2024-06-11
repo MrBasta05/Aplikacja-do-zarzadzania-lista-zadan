@@ -14,7 +14,7 @@ public:
     void editTask(int index, const Task& task);
     void deleteTask(int index);
     void saveTaskList(const std::string& filename)const;
-    std::vector<Task> getTasks() const;
+    void loadTasksFromFile(const std::string& filename);
     std::vector<Task> getSortedTasks() const;
 };
 

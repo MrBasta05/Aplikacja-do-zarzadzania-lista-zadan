@@ -32,8 +32,18 @@ const{
     }
 }
 
-std::vector<Task> TaskManager::getTasks() const {
-    return tasks;
+void TaskManager::loadTasksFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        tasks.clear();
+        while (!file.eof()) {
+            Task task = Task::fromStream(file);
+            if (!task.getTitle().empty()) { 
+                tasks.push_back(task);
+            }
+        }
+        file.close();
+    }
 }
 
 std::vector<Task> TaskManager::getSortedTasks() const {

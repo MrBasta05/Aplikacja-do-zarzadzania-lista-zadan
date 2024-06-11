@@ -2,8 +2,9 @@
 #ifndef TASK_H
 #define TASK_H
 #include <vector>
-#include <fstream>
 #include <string>
+#include <iostream>
+#include <sstream>
 using namespace std;
 
 class Task {
@@ -34,13 +35,25 @@ public:
     void setCategory(const std::string& category);
     //save format
     friend std::ostream& operator<<(std::ostream& os, const Task& task) {
-        os << "Task Name: " << task.title << "\n";
-        os << "Task Name: " << task.description << "\n";
-        os << "Task Name: " << task.dueDate << "\n";
-        os << "Task Name: " << task.category << "\n";
-        os << "Priority: " << task.priority << "\n";
+        os << task.title <<"~" << task.description << "~" << task.dueDate << "~" << task.category << "~" << task.priority << "\n";
         return os;
     }
+    //read format
+    static Task fromStream(std::istream& is) {
+        std::string title, description, dueDate, priority, category;
+        std::string line;
+
+        if (std::getline(is, line)) {
+            std::istringstream lineStream(line);
+            std::getline(lineStream, title, '~');
+            std::getline(lineStream, description, '~');
+            std::getline(lineStream, dueDate, '~');
+            std::getline(lineStream, category, '~');
+            std::getline(lineStream, priority, '~');
+        }
+
+        return Task(title, description, dueDate, priority, category);
+    };
  
 };
 
