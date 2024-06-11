@@ -8,10 +8,9 @@ enum {
     ID_AddTask = 1,
     ID_EditTask,
     ID_DeleteTask,
-    ID_SaveTask
 };
 
-GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1000, 400)) {
+GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 400)) {
     wxPanel* panel = new wxPanel(this, -1);
 
     taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);
@@ -41,13 +40,11 @@ GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPositi
     wxButton* addButton = new wxButton(panel, ID_AddTask, wxT("Add Task"), wxPoint(450, 290));
     wxButton* editButton = new wxButton(panel, ID_EditTask, wxT("Edit Task"), wxPoint(550, 290));
     wxButton* deleteButton = new wxButton(panel, ID_DeleteTask, wxT("Delete Task"), wxPoint(650, 290));
-    wxButton* saveButton = new wxButton(panel, ID_SaveTask, wxT("Save to file"), wxPoint(750, 290));
 
     Connect(ID_AddTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnAddTask));
     Connect(ID_EditTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnEditTask));
     Connect(ID_DeleteTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnDeleteTask));
     Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxCommandEventHandler(GUI::OnSelectTask));
-    Connect(ID_SaveTask, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI::OnSaveTask));
     taskManager.loadTasksFromFile("tasks.txt");
     LoadTasks();
 }
@@ -101,7 +98,7 @@ void GUI::OnAddTask(wxCommandEvent& event) {
 
     Task newTask(title, description, dueDate, priority, category);
     taskManager.addTask(newTask);
-
+    taskManager.saveTaskList();
     LoadTasks();
 }
 
@@ -117,7 +114,7 @@ void GUI::OnEditTask(wxCommandEvent& event) {
 
     Task editedTask(title, description, dueDate, priority, category);
     taskManager.editTask(selection, editedTask);
-
+    taskManager.saveTaskList();
     LoadTasks();
 }
 
@@ -126,11 +123,8 @@ void GUI::OnDeleteTask(wxCommandEvent& event) {
     if (selection == wxNOT_FOUND) return;
 
     taskManager.deleteTask(selection);
+    taskManager.saveTaskList();
     LoadTasks();
-}
-
-void GUI::OnSaveTask(wxCommandEvent& event) {
-    taskManager.saveTaskList("tasks.txt");
 }
 
 void GUI::OnSelectTask(wxCommandEvent& event) {
@@ -141,9 +135,10 @@ void GUI::OnSelectTask(wxCommandEvent& event) {
     titleInput->SetValue(selectedTask.getTitle());
     descriptionInput->SetValue(selectedTask.getDescription());
     
-    //wxDateTime dueDate;
-    //dueDate.ParseISODate(selectedTask.getDueDate());
-    //dueDateInput->SetValue(dueDate);
+    wxDateTime date;
+    wxString dateString = selectedTask.getDueDate();
+    date.ParseFormat(dateString, "%d.%m.%Y");
+    dueDateInput->SetValue(date);
 
     priorityInput->SetValue(selectedTask.getPriority());
     categoryChoice->SetStringSelection(selectedTask.getCategory());

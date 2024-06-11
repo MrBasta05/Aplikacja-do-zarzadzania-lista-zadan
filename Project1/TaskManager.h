@@ -13,8 +13,8 @@ public:
     void addTask(const Task& task);
     void editTask(int index, const Task& task);
     void deleteTask(int index);
-    void saveTaskList(const std::string& filename)const;
-    void loadTasksFromFile(const std::string& filename);
+    void saveTaskList(const std::string& filename = "tasks.txt")const;
+    void loadTasksFromFile(const std::string& filename = "tasks.txt");
     std::vector<Task> getSortedTasks() const;
 };
 

@@ -30,7 +30,6 @@ public:
     void OnEditTask(wxCommandEvent& event);
     void OnDeleteTask(wxCommandEvent& event);
     void OnSelectTask(wxCommandEvent& event);
-    void OnSaveTask(wxCommandEvent& event);
     void LoadTasks();
 };
 
