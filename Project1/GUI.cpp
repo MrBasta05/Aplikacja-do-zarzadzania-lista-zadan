@@ -85,6 +85,10 @@ void GUI::LoadTasks() {
         taskList->InsertItem(item);
         taskList->SetItem(i, 1, task.getCategory());
         taskList->SetItem(i, 2, task.getDueDate());
+        titleInput->SetValue("");
+        descriptionInput->SetValue("");
+        priorityInput->SetValue("");
+        categoryChoice->SetStringSelection("");
     }
 }
 
@@ -137,9 +141,9 @@ void GUI::OnSelectTask(wxCommandEvent& event) {
     titleInput->SetValue(selectedTask.getTitle());
     descriptionInput->SetValue(selectedTask.getDescription());
     
-    wxDateTime dueDate;
-    dueDate.ParseISODate(selectedTask.getDueDate());
-    dueDateInput->SetValue(dueDate);
+    //wxDateTime dueDate;
+    //dueDate.ParseISODate(selectedTask.getDueDate());
+    //dueDateInput->SetValue(dueDate);
 
     priorityInput->SetValue(selectedTask.getPriority());
     categoryChoice->SetStringSelection(selectedTask.getCategory());
