@@ -25,7 +25,7 @@ void TaskManager::saveTaskList(const std::string& filename)
 const{
     std::ofstream file(filename);
     if (file.is_open()) {
-        for (const auto& task : tasks) {
+        for (const auto& task : getSortedTasks()) {
             file << task << "\n";
         }
         file.close();
