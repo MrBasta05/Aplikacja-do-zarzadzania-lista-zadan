@@ -10,7 +10,7 @@ enum {
     ID_DeleteTask,
 };
 
-GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 400)) {
+GUI::GUI(const wxString& title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 360)) {
     wxPanel* panel = new wxPanel(this, -1);
 
     taskList = new wxListCtrl(panel, wxID_ANY, wxPoint(10, 10), wxSize(400, 300), wxLC_REPORT | wxLC_SINGLE_SEL);

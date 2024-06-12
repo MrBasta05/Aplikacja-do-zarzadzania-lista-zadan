@@ -10,14 +10,18 @@ void TaskManager::addTask(const Task& task) {
 }
 
 void TaskManager::editTask(int index, const Task& task) {
-    if (index >= 0 && index < tasks.size()) {
-        tasks[index] = task;
+    vector<Task> sortedTasks = getSortedTasks();
+    if (index >= 0 && index < sortedTasks.size()) {
+        sortedTasks[index] = task;
+        tasks = sortedTasks;
     }
 }
 
 void TaskManager::deleteTask(int index) {
-    if (index >= 0 && index < tasks.size()) {
-        tasks.erase(tasks.begin() + index);
+    vector<Task> sortedTasks = getSortedTasks();
+    if (index >= 0 && index < sortedTasks.size()) {
+        sortedTasks.erase(sortedTasks.begin() + index);
+        tasks = sortedTasks;
     }
 }
 
@@ -25,7 +29,9 @@ void TaskManager::saveTaskList(const std::string& filename)
 const{
     std::ofstream file(filename);
     if (file.is_open()) {
-        for (const auto& task : getSortedTasks()) {
+        vector<Task> sortedTasks = getSortedTasks();
+        reverse(sortedTasks.begin(), sortedTasks.end());
+        for (const auto& task : sortedTasks) {
             file << task << "\n";
         }
         file.close();
